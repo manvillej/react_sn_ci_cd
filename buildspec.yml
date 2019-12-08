@@ -17,3 +17,4 @@ phases:
   post_build:
     commands:
       - aws s3 sync ./build $S3_BUCKET
+
