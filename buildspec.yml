@@ -17,6 +17,8 @@ phases:
   post_build:
     commands:
       - aws s3 sync ./build $S3_BUCKET
-      - HTML=$(cat ./build/index.html | base64); echo "{\"endpoint\":\"$REACT_ENDPOINT\",\"data\":\"$HTML\"}";curl -i -X POST -u $AUTH -H "Content-Type:application/json" -d "{\"endpoint\":\"$ENDPOINT\",\"data\":\"$HTML\"}" $URL
+      - HTML=$(cat ./build/index.html | base64)
+      - echo "{\"endpoint\":\"$REACT_ENDPOINT\",\"data\":\"$HTML\"}";
+      - curl "https://dev81833.service-now.com/api/now/table/incident?sysparm_limit=1" --request GET --header "Accept:application/json" --user $SERVICENOW_USERNAME:$SERVICENOW_PASSWORD
      
 
