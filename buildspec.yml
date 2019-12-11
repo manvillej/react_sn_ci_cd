@@ -19,6 +19,5 @@ phases:
       - aws s3 sync ./build $S3_BUCKET
       - HTML=$(cat ./build/index.html | base64)
       - echo "{\"endpoint\":\"$REACT_ENDPOINT\",\"data\":\"$HTML\"}";
-      - curl "$DEPLOYMENT_ENDPOINT" --request POST --header "Accept:application/json" --header "Content-Type:application/json" --data "{\"endpoint\":\"$REACT_ENDPOINT\",\"data\":\"$HTML"}" --user $SERVICENOW_USERNAME:$SERVICENOW_PASSWORD
-     
+      - curl $DEPLOYMENT_ENDPOINT --request POST --header "Accept:application/json" --header "Content-Type:application/json" --data "{\"endpoint\":\"$REACT_ENDPOINT\",\"data\":\"$HTML\"}" --user $SERVICENOW_USERNAME:$SERVICENOW_PASSWORD    
 
