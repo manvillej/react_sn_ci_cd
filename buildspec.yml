@@ -17,7 +17,6 @@ phases:
   post_build:
     commands:
       - aws s3 sync ./build $S3_BUCKET
-      - HTML=$(cat ./build/index.html | base64); echo "{\"endpoint\":\"$REACT_ENDPOINT\",\"data\":\"$HTML\"}"; echo $HTML | base64 -D
-
+      - HTML=$(cat ./build/index.html | base64); echo "{\"endpoint\":\"$REACT_ENDPOINT\",\"data\":\"$HTML\"}";
      
 
