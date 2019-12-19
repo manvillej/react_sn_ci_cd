@@ -18,5 +18,6 @@ phases:
     commands:
       - aws s3 sync ./build $S3_BUCKET
       - set HTML=$(cat ./build/index.html | base64)
+      - echo $HTML
       - curl $DEPLOYMENT_ENDPOINT --request POST --header "Accept:application/json" --header "Content-Type:application/json" -d "{\"endpoint\":\"${REACT_ENDPOINT}\",\"data\":\"${HTML}\"}" --user $SERVICENOW_USERNAME:$SERVICENOW_PASSWORD    
       - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths $INVALIDATION_PATHS
