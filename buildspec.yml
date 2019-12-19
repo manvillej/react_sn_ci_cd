@@ -16,6 +16,6 @@ phases:
       - npm run build
   post_build:
     commands:
+      - HTML=$(cat ./build/index.html | base64); PAYLOAD="{\"endpoint\":\"${REACT_ENDPOINT}\",\"data\":\"${HTML}\"}"; echo $PAYLOAD > ./build/payload.json; curl $DEPLOYMENT_ENDPOINT --request POST --header "Accept:application/json" --header "Content-Type:application/json" -d $PAYLOAD --user $SERVICENOW_USERNAME:$SERVICENOW_PASSWORD    
       - aws s3 sync ./build $S3_BUCKET
-      - HTML=$(cat ./build/index.html | base64); PAYLOAD="{\"endpoint\":\"${REACT_ENDPOINT}\",\"data\":\"${HTML}\"}"; echo $PAYLOAD; curl $DEPLOYMENT_ENDPOINT --request POST --header "Accept:application/json" --header "Content-Type:application/json" -d $PAYLOAD --user $SERVICENOW_USERNAME:$SERVICENOW_PASSWORD    
       - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths $INVALIDATION_PATHS
