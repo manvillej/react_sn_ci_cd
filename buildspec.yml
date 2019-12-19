@@ -19,5 +19,5 @@ phases:
       - HTML=$(cat ./build/index.html | base64); PAYLOAD="{\"endpoint\":\"${REACT_ENDPOINT}\",\"data\":\"${HTML}\"}"; echo $PAYLOAD > ./build/payload.json;   
       - aws s3 sync ./build $S3_BUCKET
       - echo HTML;
-      - curl $DEPLOYMENT_ENDPOINT --request POST --header "Accept:application/json" --header "Content-Type:application/json" -d $PAYLOAD --user $SERVICENOW_USERNAME:$SERVICENOW_PASSWORD 
+      - curl --header "Accept:application/json" --header "Content-Type:application/json" -d "@payload.json" --user $SERVICENOW_USERNAME:$SERVICENOW_PASSWORD -X POST $DEPLOYMENT_ENDPOINT 
       - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths $INVALIDATION_PATHS
