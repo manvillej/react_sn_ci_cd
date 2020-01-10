@@ -1,6 +1,4 @@
-My Example project on how to deploy standard react apps to ServiceNow
- 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+My Example project on how to deploy standard react apps to ServiceNow. It uses AWS's S3 & cloudfront to deploy an application to service
 
 ## Available Scripts
 
