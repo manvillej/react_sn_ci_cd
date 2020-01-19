@@ -4,24 +4,31 @@ import axios from 'axios'
 
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+
+import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
 
 import ButtonAppBar from './AppBar.js';
+import SideListMenu from './SideListMenu.js';
 
-const useStyles = makeStyles({
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
   list: {
     width: 200,
   },
-  fullList: {
-    width: 'auto',
-  },
-});
+}));
+
 
 function App() {
   const classes = useStyles();
@@ -37,34 +44,7 @@ function App() {
     setState({ ...state, [side]: open });
   };
 
-  const sideList = side => (
-    <div
-      className={classes.list}
-      role="presentation"
-      onClick={toggleDrawer(side, false)}
-      onKeyDown={toggleDrawer(side, false)}
-    >
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
-
-  const [incidents, setIncidents] = useState([])
+  const [incidentData, setIncidents] = useState([])
 
   useEffect(()=>{
      axios.get('/api/now/table/incident?sysparm_limit=10')
@@ -73,7 +53,8 @@ function App() {
           })
   },[])
 
-  const Incidents = () => {
+  const Incidents = (props) => {
+    const incidents = props.data;
     return (
       <ul>
         {incidents.map( (i)=>(<li key={i.sys_id}>{i.number}: {i.short_description}</li>)) }
@@ -81,13 +62,86 @@ function App() {
     )
   }
 
+  const buttonAction = (
+    <Button color="secondary" size="small">
+      lorem
+    </Button>
+  );
+
+  const [snackState, setSnackState] = React.useState({
+    open: false,
+    vertical: 'bottom',
+    horizontal: 'right',
+    message: '',
+    action: null,
+  });
+
+  const { vertical, horizontal, open, message, action } = snackState;
+
+  const handleClick = newState => () => {
+    setSnackState({ open: true, ...newState });
+  };
+
+  const handleClose = () => {
+    setSnackState({ ...snackState, open: false });
+  };
+
+  const actions = [
+    {
+      text:'All mail',
+      onClick:()=>{alert('All mail');}
+    },
+    {
+      text:'Trash',
+      onClick:()=>{alert('Trash');}
+    },
+    {
+      text:'Spam',
+      onClick:()=>{alert('Spam');}
+    },
+    {
+      text:'Snack',
+      onClick:handleClick({ 
+        vertical: 'bottom', 
+        horizontal: 'right', 
+        message:'I love snacks',
+        action:buttonAction,
+      })
+    },
+    {
+      text:'SNACKSSSS',
+      onClick:handleClick({
+        vertical: 'bottom',
+        horizontal: 'right',
+        message:'I really love snacks',
+        action:buttonAction,
+      })
+    },
+  ];
+
   return (
     <div>
       <ButtonAppBar menuButtonOnClick={toggleDrawer('left', true)}/>
-      <Incidents/>
+      <Grid container spacing={3}>
+        {[0,1,2].map(()=>{return (
+          <Grid item xs={4}>
+            <Paper>
+              <Incidents data={incidentData}/>
+            </Paper>
+          </Grid>
+        )})}
+      </Grid>
       <Drawer open={state.left} onClose={toggleDrawer('left', false)}>
-        {sideList('left')}
+        <SideListMenu side='left' toggleDrawer={toggleDrawer} actions={actions}/>
       </Drawer>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        key={`${vertical},${horizontal}`}
+        open={open}
+        onClose={handleClose}
+        message={message}
+        action={action}
+      />
     </div>
   );
 }
