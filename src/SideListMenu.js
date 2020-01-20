@@ -17,34 +17,38 @@ const useStyles = makeStyles(theme => ({
 
 const SideListMenu = (props) => {
   const classes = useStyles();
-  const toggleDrawer = props.toggleDrawer;
-  const side = props.side;
-  const actions = props.actions;
+  const { toggleDrawer, side, actions } = props;
+
+  const listItems = actions.map((action, index) => {
+        let Icon = action.icon || InboxIcon;
+        return (
+          <ListItem button onClick={action.onClick} key={action.text}>
+            <ListItemIcon><Icon/></ListItemIcon>
+            <ListItemText primary={action.text} />
+          </ListItem>
+        )
+      });
+
   return (
-  <div
-    className={classes.list}
-    role="presentation"
-    onClick={toggleDrawer(side, false)}
-    onKeyDown={toggleDrawer(side, false)}
-  >
-    <List>
-      {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-        <ListItem button key={text}>
-          <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-          <ListItemText primary={text} />
-        </ListItem>
-      ))}
-    </List>
-    <Divider />
-    <List>
-      {actions.map((action, index) => (
-        <ListItem button onClick={action.onClick} key={action.text}>
-          <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-          <ListItemText primary={action.text} />
-        </ListItem>
-      ))}
-    </List>
-  </div>
+    <div
+      className={classes.list}
+      role="presentation"
+      onClick={toggleDrawer(side, false)}
+      onKeyDown={toggleDrawer(side, false)}
+    >
+      <List>
+        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemIcon>{ index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {listItems}
+      </List>
+    </div>
 )};
 
 export default SideListMenu;
