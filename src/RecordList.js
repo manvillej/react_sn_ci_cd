@@ -16,13 +16,11 @@ const useStyles = makeStyles({
   },
 });
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
 
 
 function DenseTable(props) {
   const classes = useStyles();
+  const { data, fieldMapping, setFieldMapping, } = props;
 
   const [selected, setSelected] = React.useState([]);
   const isSelected = name => selected.indexOf(name) !== -1;
@@ -47,17 +45,13 @@ function DenseTable(props) {
   };
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.sys_id.value);
+      const newSelecteds = data.map(n => n.sys_id.value);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-
-  const rows = props.data;
-  const fieldMapping = props.fieldMapping;
-  
   const fieldKeys = Object.keys(fieldMapping);
 
   const EnhancedTableHead = (props) => {
@@ -73,9 +67,7 @@ function DenseTable(props) {
                 inputProps={{ 'aria-label': 'select all rows' }}
               />
             </TableCell>
-            {fieldKeys.map((fieldName, index) => {
-              return (<TableCell>{fieldMapping[fieldName].title}</TableCell>)
-            })}
+            {fieldKeys.map((fieldName, index) => {return (<TableCell>{fieldMapping[fieldName].title}</TableCell>)})}
           </TableRow>
         </TableHead>
       )
@@ -86,12 +78,12 @@ function DenseTable(props) {
       <Table className={classes.table} size="small" aria-label="a dense table">
         <EnhancedTableHead
           numSelected={selected.length}
-          rowCount={rows.length}
+          rowCount={data.length}
           fieldMapping={fieldMapping}
           onSelectAllClick={handleSelectAllClick}
           fieldKeys={fieldKeys}/>
         <TableBody>      
-          {rows.map(row => {
+          {data.map(row => {
             const isItemSelected = isSelected(row.sys_id.value);
             const labelID = `enhanced-table-checkbox-${row.sys_id.value}`;
             return (
@@ -124,8 +116,7 @@ function DenseTable(props) {
   );
 }
 
-
-const exampleTable = () => {
+const ExampleTable = () => {
   
   const fieldMapping = {
     name:{
@@ -144,6 +135,10 @@ const exampleTable = () => {
       title:'Protein\n(g)',
     },
   };
+  function createData(name, calories, fat, carbs, protein) {
+    return { name, calories, fat, carbs, protein };
+  }
+
   const rows = [
     createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
     createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
@@ -157,31 +152,4 @@ const exampleTable = () => {
   )
 }
 
-const RecordList = (props) => {
-  const data = props.data;
-  const fieldMapping = {
-    number:{
-      title:'Number',
-    },
-    short_description:{
-      title:'Short Description',
-    },
-    state:{
-      title:'State',
-    },
-    priority:{
-      title:'Priority',
-    },
-    assigned_to:{
-      title:'Assigned To',
-    },
-  };
-
-  return (
-    <DenseTable 
-      fieldMapping={fieldMapping} 
-      data={data}/>
-  )
-}
-
-export default RecordList;
+export default DenseTable;

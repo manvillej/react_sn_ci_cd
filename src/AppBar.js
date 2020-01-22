@@ -5,6 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,6 +20,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ButtonAppBar(props) {
+  const { menuButtonOnClick, loading, } = props;
   const classes = useStyles();
 
 
@@ -30,7 +32,8 @@ export default function ButtonAppBar(props) {
             ATF Exploration Dashboard
           </Typography>
 
-          <IconButton onClick={props.menuButtonOnClick}  className={classes.menuButton} color="inherit" aria-label="menu">
+          {loading && <CircularProgress color="secondary" />}
+          <IconButton onClick={menuButtonOnClick}  className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
         </Toolbar>
